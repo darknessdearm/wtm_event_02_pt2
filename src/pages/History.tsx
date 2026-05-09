@@ -11,7 +11,9 @@ const History: React.FC = () => {
   useEffect(() => {
     const fetchCharacters = async () => {
       const snapshot = await getDocs(collection(db, "characters"));
-      const chars: Character[] = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Character));
+      const chars: Character[] = snapshot.docs.map(
+        (doc) => ({ id: doc.id, ...doc.data() }) as Character,
+      );
       setCharacters(chars);
     };
     fetchCharacters();
@@ -20,14 +22,20 @@ const History: React.FC = () => {
   return (
     <div>
       <h2>ประวัติตัวละคร</h2>
-      {characters.map(char => (
+      {characters.map((char) => (
         <Card key={char.id} sx={{ mt: 1 }}>
           <CardContent>
-            <Typography variant="h6">{char.name} ({char.position})</Typography>
+            <Typography variant="h6">
+              {char.name} ({char.position})
+            </Typography>
             <Typography>พื้นที่: {char.mapArea}</Typography>
             <Typography>ไอเทมที่ได้รับ:</Typography>
             <ul>
-              {char.itemsCollected.map(item => <li key={item.id}>{item.name} ({item.mapArea})</li>)}
+              {char.itemsCollected.map((item) => (
+                <li key={item.id}>
+                  {item.name} ({item.mapArea})
+                </li>
+              ))}
             </ul>
           </CardContent>
         </Card>

@@ -1,0 +1,22 @@
+.container {
+  margin-top: 32px;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.titleSection {
+  margin-bottom: 20px;
+}
+
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.selectSection {
+  width: 100%;
+}

@@ -1,8 +1,15 @@
 // components/CharacterForm.tsx
 import React, { useState } from "react";
-import { Button, TextField, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import {
+  Button,
+  TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 import type { Scenario, Item } from "../types";
-import ResultCard from "./ResultCard";
+import ResultCard from "./RewardCard";
 import { scenarios } from "../data";
 
 interface CharacterFormProps {
@@ -18,7 +25,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({ onAddCharacter }) => {
   const handleSubmit = () => {
     if (!name || !position || !mapArea) return;
     // สุ่ม scenario ที่ตรงกับ mapArea
-    const filtered = scenarios.filter(s => s.reward.mapArea === mapArea);
+    const filtered = scenarios.filter((s) => s.reward.mapArea === mapArea);
     const random = filtered[Math.floor(Math.random() * filtered.length)];
     setResult(random);
 
@@ -33,11 +40,19 @@ const CharacterForm: React.FC<CharacterFormProps> = ({ onAddCharacter }) => {
 
   return (
     <div>
-      <TextField label="ชื่อตัวละคร" value={name} onChange={e => setName(e.target.value)} />
-      <TextField label="ตำแหน่ง" value={position} onChange={e => setPosition(e.target.value)} />
+      <TextField
+        label="ชื่อตัวละคร"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <TextField
+        label="ตำแหน่ง"
+        value={position}
+        onChange={(e) => setPosition(e.target.value)}
+      />
       <FormControl>
         <InputLabel>พื้นที่</InputLabel>
-        <Select value={mapArea} onChange={e => setMapArea(e.target.value)}>
+        <Select value={mapArea} onChange={(e) => setMapArea(e.target.value)}>
           <MenuItem value="Forest">Forest</MenuItem>
           <MenuItem value="Desert">Desert</MenuItem>
           <MenuItem value="Castle">Castle</MenuItem>
