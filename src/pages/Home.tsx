@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { RewardCard } from "../components";
 import type { Scenario, Character, Item } from "../types";
-import { collection, addDoc } from "firebase/firestore";
+import { ref, push } from "firebase/database";
 import { db } from "../firebase";
 import { items, positionOptions, scenarios, mapOptions } from "../data"; // สมมติคุณมีไฟล์ data.ts เก็บ scenarios
 import "./Home.css";
@@ -40,15 +40,15 @@ const Home: React.FC = () => {
   };
 
   const handleConfirm = async () => {
-    if (!currentScenario) return;
+    // if (!currentScenario) return;
     const newChar: Character = {
       name,
       position,
       mapArea,
-      itemsCollected: [],
+      itemsCollected: [...(foundItem ? [foundItem] : [])],
     };
-    // เขียนไป Firestore
-    await addDoc(collection(db, "characters"), newChar);
+    console.log("New character to save:", newChar);
+    await push(ref(db, "characters"), newChar);
     alert("บันทึกเรียบร้อย!");
     setName("");
     setPosition("");
@@ -121,16 +121,16 @@ const Home: React.FC = () => {
         สุ่มสถานการณ์
       </Button>
 
-      {/* {currentScenario && foundItem && ( */}
-      <RewardCard
-        scenario={{ id: "s1", description: "เจอปีศาจในป่า" } as Scenario} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
-        rewardItem={{ id: "i1", name: "Sword", mapArea: "001" } as Item} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
-        mapName={
-          mapOptions.find((m) => m.id === mapArea)?.name || "Unknown Map"
-        }
-        onConfirm={handleConfirm}
-      />
-      {/* )} */}
+      {currentScenario && foundItem && (
+        <RewardCard
+          scenario={{ id: "s1", description: "เจอปีศาจในป่า" } as Scenario} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
+          rewardItem={{ id: "i1", name: "Sword", mapArea: "001" } as Item} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
+          mapName={
+            mapOptions.find((m) => m.id === mapArea)?.name || "Unknown Map"
+          }
+          onConfirm={handleConfirm}
+        />
+      )}
     </Container>
   );
 };
