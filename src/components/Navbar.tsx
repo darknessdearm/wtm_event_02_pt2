@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
+              fontFamily: "prompt",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
@@ -105,7 +105,7 @@ const Navbar: React.FC = () => {
               mr: 2,
               display: { xs: "flex", md: "none" },
               flexGrow: 1,
-              fontFamily: "monospace",
+              fontFamily: "prompt",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
