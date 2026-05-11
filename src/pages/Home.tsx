@@ -8,14 +8,13 @@ import {
   FormControl,
   Button,
   Container,
-  Card,
   Grid,
   Paper,
   Typography,
 } from "@mui/material";
 import { RewardCard } from "../components";
 import type { Scenario, Character, Item } from "../types";
-import { collection, addDoc } from "firebase/firestore";
+import { ref, push } from "firebase/database";
 import { db } from "../firebase";
 import { items, positionOptions, scenarios, mapOptions } from "../data"; // สมมติคุณมีไฟล์ data.ts เก็บ scenarios
 import "./Home.css";
@@ -29,7 +28,17 @@ const Home: React.FC = () => {
   const [foundItem, setFoundItem] = useState<Item | null>(null);
 
   const handleSubmit = () => {
-    if (!name || !position || !mapArea) return;
+    if (!name || !position || !mapArea) {
+      const newErrors = {
+        name: !name.trim(),
+        position: !position,
+        mapArea: !mapArea,
+      };
+
+      setErrors(newErrors);
+
+      return;
+    }
     const filtered = items.filter((s) => s.mapArea === mapArea);
     const dropItem: Item =
       filtered[Math.floor(Math.random() * filtered.length)];
@@ -39,23 +48,46 @@ const Home: React.FC = () => {
     setFoundItem(dropItem);
   };
 
-  const handleConfirm = async () => {
-    if (!currentScenario) return;
-    const newChar: Character = {
-      name,
-      position,
-      mapArea,
-      itemsCollected: [],
-    };
-    // เขียนไป Firestore
-    await addDoc(collection(db, "characters"), newChar);
-    alert("บันทึกเรียบร้อย!");
-    setName("");
-    setPosition("");
-    setMapArea("");
-    setCurrentScenario(null);
-  };
+  const [errors, setErrors] = useState({
+    name: false,
+    position: false,
+    mapArea: false,
+  });
 
+  const handleConfirm = async () => {
+    // validate fields
+
+    try {
+      const newChar: Character = {
+        name,
+        position,
+        mapArea,
+        itemsCollected: [...(foundItem ? [foundItem] : [])],
+      };
+
+      console.log("New character to save:", newChar);
+
+      await push(ref(db, "characters"), newChar);
+
+      alert("บันทึกเรียบร้อย!");
+
+      // reset form
+      setName("");
+      setPosition("");
+      setMapArea("");
+      setCurrentScenario(null);
+
+      // clear errors
+      setErrors({
+        name: false,
+        position: false,
+        mapArea: false,
+      });
+    } catch (error) {
+      console.error("Save failed:", error);
+      alert("เกิดข้อผิดพลาดในการบันทึก");
+    }
+  };
   return (
     <Container className="container">
       <section className="titleSection">
@@ -74,16 +106,18 @@ const Home: React.FC = () => {
         <Grid container spacing={2}>
           <Grid size={12}>
             <TextField
-              className="selectSection"
-              color="primary"
+              fullWidth
+              required
               label="ชื่อ-นามสกุลตัวละคร"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              sx={{ mr: 1 }}
+              error={errors.name}
+              helperText={errors.name ? "กรุณากรอกชื่อ" : ""}
             />
           </Grid>
+
           <Grid size={{ xs: 12, sm: 6 }}>
-            <FormControl className="selectSection">
+            <FormControl fullWidth required error={errors.position}>
               <InputLabel>ตำแหน่ง</InputLabel>
               <Select
                 label="ตำแหน่ง"
@@ -98,8 +132,9 @@ const Home: React.FC = () => {
               </Select>
             </FormControl>
           </Grid>
+
           <Grid size={{ xs: 12, sm: 6 }}>
-            <FormControl className="selectSection">
+            <FormControl fullWidth required error={errors.mapArea}>
               <InputLabel>พื้นที่</InputLabel>
               <Select
                 label="พื้นที่"
@@ -121,16 +156,16 @@ const Home: React.FC = () => {
         สุ่มสถานการณ์
       </Button>
 
-      {/* {currentScenario && foundItem && ( */}
-      <RewardCard
-        scenario={{ id: "s1", description: "เจอปีศาจในป่า" } as Scenario} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
-        rewardItem={{ id: "i1", name: "Sword", mapArea: "001" } as Item} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
-        mapName={
-          mapOptions.find((m) => m.id === mapArea)?.name || "Unknown Map"
-        }
-        onConfirm={handleConfirm}
-      />
-      {/* )} */}
+      {currentScenario && foundItem && (
+        <RewardCard
+          scenario={{ id: "s1", description: "เจอปีศาจในป่า" } as Scenario} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
+          rewardItem={{ id: "i1", name: "Sword", mapArea: "001" } as Item} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
+          mapName={
+            mapOptions.find((m) => m.id === mapArea)?.name || "Unknown Map"
+          }
+          onConfirm={handleConfirm}
+        />
+      )}
     </Container>
   );
 };
