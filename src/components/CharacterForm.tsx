@@ -9,8 +9,8 @@ import {
   FormControl,
 } from "@mui/material";
 import type { Scenario, Item } from "../types";
-import ResultCard from "./RewardCard";
-import { scenarios } from "../data";
+import RewardCard from "./RewardCard";
+import { scenarios, items, mapOptions } from "../data";
 
 interface CharacterFormProps {
   onAddCharacter: (character: any) => void;
@@ -21,20 +21,23 @@ const CharacterForm: React.FC<CharacterFormProps> = ({ onAddCharacter }) => {
   const [position, setPosition] = useState("");
   const [mapArea, setMapArea] = useState("");
   const [result, setResult] = useState<Scenario | null>(null);
+  const [foundItem, setFoundItem] = useState<Item | null>(null);
 
   const handleSubmit = () => {
     if (!name || !position || !mapArea) return;
-    // สุ่ม scenario ที่ตรงกับ mapArea
-    const filtered = scenarios.filter((s) => s.reward.mapArea === mapArea);
-    const random = filtered[Math.floor(Math.random() * filtered.length)];
-    setResult(random);
+    const randomScenario =
+      scenarios[Math.floor(Math.random() * scenarios.length)];
+    const filteredItems = items.filter((i) => i.mapArea === mapArea);
+    const dropItem =
+      filteredItems[Math.floor(Math.random() * filteredItems.length)];
+    setResult(randomScenario);
+    setFoundItem(dropItem ?? null);
 
-    // บันทึกตัวละคร (เฉพาะครั้งเดียว)
     onAddCharacter({
       name,
       position,
       mapArea,
-      itemsCollected: [random.reward],
+      itemsCollected: dropItem ? [dropItem] : [],
     });
   };
 
@@ -60,7 +63,14 @@ const CharacterForm: React.FC<CharacterFormProps> = ({ onAddCharacter }) => {
       </FormControl>
       <Button onClick={handleSubmit}>สุ่มสถานการณ์</Button>
 
-      {result && <ResultCard scenario={result} onConfirm={() => {}} />}
+      {result && foundItem && (
+        <RewardCard
+          scenario={result}
+          rewardItem={foundItem}
+          mapName={mapOptions.find((m) => m.id === mapArea)?.name ?? mapArea}
+          onConfirm={() => {}}
+        />
+      )}
     </div>
   );
 };
