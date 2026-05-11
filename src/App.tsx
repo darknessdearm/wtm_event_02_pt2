@@ -10,16 +10,16 @@ const theme = createTheme({
     fontFamily: '"Prompt", sans-serif',
   },
 });
-
+const basePath = "/wtm_event_02_pt2/";
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/items" element={<Items />} />
+          <Route path={basePath} element={<Home />} />
+          <Route path={`${basePath}history`} element={<History />} />
+          <Route path={`${basePath}items`} element={<Items />} />
         </Routes>
       </Router>
     </ThemeProvider>

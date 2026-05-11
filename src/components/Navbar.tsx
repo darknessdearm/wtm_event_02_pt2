@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 const Navbar: React.FC = () => {
   const pages = ["Home", "History", "Items"];
   const navigate = useNavigate();
-
+  const basePath = "/wtm_event_02_pt2/";
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -29,9 +29,9 @@ const Navbar: React.FC = () => {
 
   const handleMenuClick = (page: string) => {
     if (page === "Home") {
-      navigate(`/`);
+      navigate(`${basePath}`);
     } else {
-      navigate(`/${page.toLowerCase()}`);
+      navigate(`${basePath}${page.toLowerCase()}`);
     }
   };
 
