@@ -158,11 +158,12 @@ const Home: React.FC = () => {
 
       {currentScenario && foundItem && (
         <RewardCard
-          scenario={{ id: "s1", description: "เจอปีศาจในป่า" } as Scenario} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
-          rewardItem={{ id: "i1", name: "Sword", mapArea: "001" } as Item} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
+          scenario={currentScenario} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
+          rewardItem={foundItem} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
           mapName={
             mapOptions.find((m) => m.id === mapArea)?.name || "Unknown Map"
           }
+          onRefresh={handleSubmit}
           onConfirm={handleConfirm}
         />
       )}
