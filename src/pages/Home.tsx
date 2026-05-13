@@ -11,6 +11,7 @@ import {
   Grid,
   Paper,
   Typography,
+  Alert,
 } from "@mui/material";
 import { RewardCard } from "../components";
 import type { Scenario, Character, Item } from "../types";
@@ -19,6 +20,7 @@ import { db } from "../firebase";
 import { items, positionOptions, scenarios, mapOptions } from "../data"; // สมมติคุณมีไฟล์ data.ts เก็บ scenarios
 import "./Home.css";
 import "../App.css";
+import { Check } from "@mui/icons-material";
 
 const Home: React.FC = () => {
   const [name, setName] = useState("");
@@ -54,6 +56,14 @@ const Home: React.FC = () => {
     mapArea: false,
   });
 
+  const renderSuccessAlert = (message: string) => {
+    return <Alert severity="success">{message}</Alert>;
+  };
+
+  const renderErrorAlert = (message: string) => {
+    return <Alert severity="error">{message}</Alert>;
+  };
+
   const handleConfirm = async () => {
     // validate fields
 
@@ -69,7 +79,7 @@ const Home: React.FC = () => {
 
       await push(ref(db, "characters"), newChar);
 
-      alert("บันทึกเรียบร้อย!");
+      renderSuccessAlert("บันทึกเรียบร้อย!");
 
       // reset form
       setName("");
@@ -85,7 +95,7 @@ const Home: React.FC = () => {
       });
     } catch (error) {
       console.error("Save failed:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึก");
+      renderErrorAlert("เกิดข้อผิดพลาดในการบันทึก");
     }
   };
   return (
