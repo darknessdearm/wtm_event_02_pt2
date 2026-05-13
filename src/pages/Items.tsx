@@ -4,7 +4,6 @@ import type { Item } from "../types";
 import { ref, onValue } from "firebase/database";
 import { db } from "../firebase";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
-import { items as itemsData } from "../data";
 
 const Items: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -39,7 +38,7 @@ const Items: React.FC = () => {
     >
       <h2>รวมไอเทมทั้งหมด</h2>
       <Grid container spacing={2}>
-        {itemsData.map((item) => (
+        {items.map((item) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.id}>
             <Card
               key={item.id}
