@@ -94,6 +94,41 @@ const Home: React.FC = () => {
         <Typography variant="h4" className="prompt-regular">
           สุ่มสถานการณ์ในการค้นพาเด็กหญิง Part 2
         </Typography>
+        <Typography variant="body1" className="prompt-regular" gutterBottom>
+          กรอกข้อมูลตัวละครของคุณและกด "สุ่มสถานการณ์" โดยมีเงื่อนไขดังนี้:
+        </Typography>
+        <Typography
+          variant="body1"
+          className="prompt-regular"
+          gutterBottom
+          sx={{
+            textAlign: "left",
+          }}
+        >
+          1. หนึ่งตัวละครสามารถสำรวจได้เพียง 2 ครั้งต่อหนึ่งพื้นที่
+        </Typography>
+        <Typography
+          variant="body1"
+          className="prompt-regular"
+          gutterBottom
+          sx={{
+            textAlign: "left",
+          }}
+        >
+          2. การสำรวจแต่ละครั้งสามารถได้รับไอเทมได้เพียงหนึ่งชิ้นเท่านั้น
+          (มีโอกาสได้รับไอเทมเดิมซ้ำได้)
+        </Typography>
+        <Typography
+          variant="body1"
+          className="prompt-regular"
+          gutterBottom
+          sx={{
+            textAlign: "left",
+          }}
+        >
+          3. การสำรวจแต่ละครั้งสามารถสำรวจซ้ำ้ได้มากสุด 3 ครั้ง
+          และครั้งสุดท้ายคุณจะได้รับไอเทมสิ่งนั้นโดยอัตโนมัติ
+        </Typography>
       </section>
 
       <Paper sx={{ p: 2, mb: 3, width: { xs: "100%", sm: "80%" } }}>

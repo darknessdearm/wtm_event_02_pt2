@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import type { Item } from "../types";
 import { ref, onValue } from "firebase/database";
 import { db } from "../firebase";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { items as itemsData } from "../data";
 
 const Items: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -26,16 +27,43 @@ const Items: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div
+      style={{
+        marginTop: "32px",
+        padding: "0 40px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+      }}
+    >
       <h2>รวมไอเทมทั้งหมด</h2>
-      {items.map((item) => (
-        <Card key={item.id} sx={{ mt: 1 }}>
-          <CardContent>
-            <Typography>{item.name}</Typography>
-            <Typography variant="caption">พื้นที่: {item.mapArea}</Typography>
-          </CardContent>
-        </Card>
-      ))}
+      <Grid container spacing={2}>
+        {itemsData.map((item) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.id}>
+            <Card
+              key={item.id}
+              sx={{ mt: 1, mb: 1, width: "100%", height: "100%" }}
+            >
+              <CardContent>
+                <img
+                  src={item.imgUrl ?? ""}
+                  style={{
+                    maxWidth: "250px",
+                    maxHeight: "250px",
+                    justifyContent: "center",
+                    display: "block",
+                    margin: "0 auto",
+                  }}
+                  alt={item.name}
+                />
+                <Typography>{item.name}</Typography>
+                <Typography variant="caption"></Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </div>
   );
 };
