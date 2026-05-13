@@ -7,7 +7,6 @@ import {
   Button,
   Grid,
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
