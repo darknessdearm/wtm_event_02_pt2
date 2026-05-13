@@ -4,12 +4,11 @@ import type { Character } from "../types";
 import { onValue, ref } from "firebase/database";
 import { db } from "../firebase";
 import {
-  Autocomplete,
   Box,
   Card,
   CardContent,
   Grid,
-  IconButton,
+  InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
@@ -60,45 +59,61 @@ const History: React.FC = () => {
     };
   }, []);
 
+  const filtered = characters.filter((char) =>
+    char.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="container">
       <h2>บันทึกการค้นหา</h2>
-      <Grid
+      <TextField
+        fullWidth
+        placeholder="ค้นหาตัวละคร..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
         sx={{
-          display: "flex",
-          alignItems: "center",
-          mb: 2,
-          flexDirection: "row",
+          mb: 3,
+          width: "100%",
+          "& .MuiOutlinedInput-root": {
+            backgroundColor: "rgba(255,255,255,0.12)",
+            borderRadius: "12px",
+            "& fieldset": {
+              borderColor: "rgba(255,255,255,0.4)",
+              borderWidth: "2px",
+            },
+            "&:hover fieldset": {
+              borderColor: "rgba(255,255,255,0.7)",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#c084fc",
+            },
+          },
+          "& .MuiOutlinedInput-input": {
+            color: "#fff",
+            fontSize: "16px",
+            padding: "14px 16px",
+            "&::placeholder": {
+              color: "rgba(255,255,255,0.5)",
+              opacity: 1,
+            },
+          },
         }}
-      >
-        <Autocomplete
-          id="free-solo-demo"
-          freeSolo
-          options={characters.map((option) => option.name)}
-          renderInput={(params) => (
-            <TextField
-              sx={{ minWidth: "300px" }}
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                characters;
-              }}
-              color="primary"
-              label="Search characters..."
-              {...params}
-            />
-          )}
-        />
-        <IconButton onClick={() => {}}>
-          <Search color="primary" />
-        </IconButton>
-      </Grid>
-      <Grid container spacing={2}>
-        {characters.map((char) => (
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search sx={{ color: "rgba(255,255,255,0.6)" }} />
+              </InputAdornment>
+            ),
+          },
+        }}
+      />
+      <Grid container spacing={2} sx={{ width: "100%" }}>
+        {filtered.map((char) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={char.id}>
             <Card
               key={char.id}
-              sx={{ mt: 1, mb: 1, width: "100%", height: "100%" }}
+              sx={{ width: "100%", height: "100%", boxSizing: "border-box" }}
             >
               <CardContent>
                 <Typography variant="h6" sx={{ textAlign: "center", mt: 1 }}>

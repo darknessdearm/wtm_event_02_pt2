@@ -19,7 +19,7 @@ interface Props {
   scenario: Scenario;
   rewardItem: Item;
   mapName: string;
-  onRefresh: () => void;
+  onRefresh?: () => void;
   onConfirm: () => void;
 }
 
@@ -57,16 +57,18 @@ const RewardCard: React.FC<Props> = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => {
-              onRefresh();
-              setShowDialog(false);
-            }}
-            color="primary"
-            variant="contained"
-          >
-            กดสุ่มอีกครั้ง
-          </Button>
+          {onRefresh && (
+            <Button
+              onClick={() => {
+                onRefresh();
+                setShowDialog(false);
+              }}
+              color="primary"
+              variant="contained"
+            >
+              กดสุ่มอีกครั้ง
+            </Button>
+          )}
           <Button
             onClick={() => {
               setShowDialog(false);
@@ -170,13 +172,15 @@ const RewardCard: React.FC<Props> = ({
             </Grid>
           </Grid>
 
-          <Button
-            variant="contained"
-            sx={{ mt: 2, mr: 2, width: { xs: "100%", sm: "auto" } }}
-            onClick={onRefresh}
-          >
-            กดสุ่มอีกครั้ง
-          </Button>
+          {onRefresh && (
+            <Button
+              variant="contained"
+              sx={{ mt: 2, mr: 2, width: { xs: "100%", sm: "auto" } }}
+              onClick={onRefresh}
+            >
+              กดสุ่มอีกครั้ง
+            </Button>
+          )}
           <Button
             variant="contained"
             sx={{ mt: 2, width: { xs: "100%", sm: "auto" } }}

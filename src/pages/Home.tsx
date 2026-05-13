@@ -11,10 +11,15 @@ import {
   Grid,
   Paper,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import { RewardCard } from "../components";
 import type { Scenario, Character, Item } from "../types";
-import { ref, push } from "firebase/database";
+import { ref, push, get, update } from "firebase/database";
 import { db } from "../firebase";
 import { items, positionOptions, scenarios, mapOptions } from "../data"; // สมมติคุณมีไฟล์ data.ts เก็บ scenarios
 import "./Home.css";
@@ -26,6 +31,9 @@ const Home: React.FC = () => {
   const [mapArea, setMapArea] = useState("");
   const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null);
   const [foundItem, setFoundItem] = useState<Item | null>(null);
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [rollCounts, setRollCounts] = useState<Record<string, number>>({});
+  const [showRerollLimitModal, setShowRerollLimitModal] = useState(false);
 
   const handleSubmit = () => {
     if (!name || !position || !mapArea) {
@@ -39,6 +47,14 @@ const Home: React.FC = () => {
 
       return;
     } else setErrors({ name: false, position: false, mapArea: false });
+
+    const sessionKey = `${name}|${position}|${mapArea}`;
+    if ((rollCounts[sessionKey] ?? 0) >= 3) {
+      setShowRerollLimitModal(true);
+      return;
+    }
+    setRollCounts((prev) => ({ ...prev, [sessionKey]: (prev[sessionKey] ?? 0) + 1 }));
+
     const filtered = items.filter((s) => s.mapArea === mapArea);
     const dropItem: Item =
       filtered[Math.floor(Math.random() * filtered.length)];
@@ -54,35 +70,56 @@ const Home: React.FC = () => {
     mapArea: false,
   });
 
-  const handleConfirm = async () => {
-    // validate fields
+  const resetForm = () => {
+    setName("");
+    setPosition("");
+    setMapArea("");
+    setCurrentScenario(null);
+    setFoundItem(null);
+    setErrors({ name: false, position: false, mapArea: false });
+  };
 
+  const handleConfirm = async () => {
     try {
+      const snapshot = await get(ref(db, "characters"));
+      const raw = snapshot.val() as Record<string, unknown> | null;
+
+      if (raw) {
+        const entries = Object.entries(raw);
+        for (const [id, data] of entries) {
+          const char = data as Partial<Character> & { itemsCollected?: unknown };
+          if (char.name !== name || char.position !== position || char.mapArea !== mapArea) continue;
+
+          const itemsRaw = char.itemsCollected;
+          const existingItems: Item[] = Array.isArray(itemsRaw)
+            ? (itemsRaw as Item[])
+            : itemsRaw && typeof itemsRaw === "object"
+              ? (Object.values(itemsRaw as Record<string, unknown>) as Item[])
+              : [];
+
+          if (existingItems.length >= 2) {
+            setShowLimitModal(true);
+            return;
+          }
+
+          const updatedItems = [...existingItems, ...(foundItem ? [foundItem] : [])];
+          await update(ref(db, `characters/${id}`), { itemsCollected: updatedItems });
+          alert("บันทึกเรียบร้อย!");
+          resetForm();
+          return;
+        }
+      }
+
+      // No existing character with same name + mapArea — create new
       const newChar: Character = {
         name,
         position,
         mapArea,
         itemsCollected: [...(foundItem ? [foundItem] : [])],
       };
-
-      console.log("New character to save:", newChar);
-
       await push(ref(db, "characters"), newChar);
-
       alert("บันทึกเรียบร้อย!");
-
-      // reset form
-      setName("");
-      setPosition("");
-      setMapArea("");
-      setCurrentScenario(null);
-
-      // clear errors
-      setErrors({
-        name: false,
-        position: false,
-        mapArea: false,
-      });
+      resetForm();
     } catch (error) {
       console.error("Save failed:", error);
       alert("เกิดข้อผิดพลาดในการบันทึก");
@@ -152,9 +189,44 @@ const Home: React.FC = () => {
         </Grid>
       </Paper>
 
-      <Button onClick={handleSubmit} variant="contained" size="large">
-        สุ่มสถานการณ์
-      </Button>
+      {!(name && position && mapArea && (rollCounts[`${name}|${position}|${mapArea}`] ?? 0) >= 3) && (
+        <Button onClick={handleSubmit} variant="contained" size="large">
+          สุ่มสถานการณ์
+        </Button>
+      )}
+      {name && position && mapArea && (
+        <Typography variant="caption" sx={{ mt: 0.5, display: "block" }}>
+          เหลือสุ่มได้อีก {Math.max(0, 3 - (rollCounts[`${name}|${position}|${mapArea}`] ?? 0))} ครั้ง
+        </Typography>
+      )}
+
+      <Dialog open={showRerollLimitModal} onClose={() => setShowRerollLimitModal(false)}>
+        <DialogTitle sx={{ color: "error.main" }}>ไม่สามารถสุ่มได้อีกแล้ว</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            ตัวละครนี้ใช้สิทธิ์สุ่มครบ 3 ครั้งแล้วในเซสชันนี้
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowRerollLimitModal(false)} variant="contained">
+            ตกลง
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={showLimitModal} onClose={() => setShowLimitModal(false)}>
+        <DialogTitle sx={{ color: "error.main" }}>ไม่สามารถเพิ่มไอเทมได้</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            ตัวละครนี้มีไอเทมครบ 2 ชิ้นในพื้นที่นี้แล้ว
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowLimitModal(false)} variant="contained">
+            ตกลง
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {currentScenario && foundItem && (
         <RewardCard
@@ -163,7 +235,7 @@ const Home: React.FC = () => {
           mapName={
             mapOptions.find((m) => m.id === mapArea)?.name || "Unknown Map"
           }
-          onRefresh={handleSubmit}
+          onRefresh={(rollCounts[`${name}|${position}|${mapArea}`] ?? 0) < 3 ? handleSubmit : undefined}
           onConfirm={handleConfirm}
         />
       )}
