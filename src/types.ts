@@ -13,6 +13,7 @@ interface Item {
   description?: string;
   imgUrl?: string;
   mapArea: string;
+  isOnlyOne?: boolean;
 }
 
 interface Scenario {

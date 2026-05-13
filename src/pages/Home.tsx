@@ -38,7 +38,7 @@ const Home: React.FC = () => {
       setErrors(newErrors);
 
       return;
-    }
+    } else setErrors({ name: false, position: false, mapArea: false });
     const filtered = items.filter((s) => s.mapArea === mapArea);
     const dropItem: Item =
       filtered[Math.floor(Math.random() * filtered.length)];
@@ -96,7 +96,7 @@ const Home: React.FC = () => {
         </Typography>
       </section>
 
-      <Paper sx={{ p: 2, mb: 3, width: { xs: "100%", sm: "80%", md: "60%" } }}>
+      <Paper sx={{ p: 2, mb: 3, width: { xs: "100%", sm: "80%" } }}>
         <div className="infoSection">
           <Typography variant="body1" className="prompt-regular" gutterBottom>
             กรอกข้อมูลตัวละครของคุณ

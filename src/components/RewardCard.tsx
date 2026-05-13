@@ -1,7 +1,20 @@
 // src/components/RewardCard.tsx
 import React from "react";
-import { Card, CardContent, Typography, Button, Grid } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  IconButton,
+} from "@mui/material";
 import type { Scenario, Item } from "../types";
+import { Close } from "@mui/icons-material";
 
 interface Props {
   scenario: Scenario;
@@ -18,64 +31,163 @@ const RewardCard: React.FC<Props> = ({
   onRefresh,
   onConfirm,
 }) => {
+  const [showDialog, setShowDialog] = React.useState(false);
+
+  const handleConfirm = () => {
+    setShowDialog(true);
+  };
+
+  const renderDialog = () => {
+    return (
+      <Dialog open={showDialog} onClose={handleConfirm}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography variant="h6" sx={{ mt: 2, px: 3 }}>
+            คุณแน่ใจใช่ไหมว่าต้องการรับไอเทมนี้?
+          </Typography>
+          <IconButton
+            onClick={() => setShowDialog(false)}
+            sx={{ mt: 1, mr: 1 }}
+          >
+            <Close />
+          </IconButton>
+        </div>
+        <DialogContent>
+          <DialogContentText>
+            หากคุณกด "รับไอเทมนี้" คุณจะได้รับไอเทมดังกล่าว
+            และไม่สามารถเปลี่ยนแปลงได้
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              onRefresh();
+              setShowDialog(false);
+            }}
+            color="primary"
+            variant="contained"
+          >
+            กดสุ่มอีกครั้ง
+          </Button>
+          <Button
+            onClick={() => {
+              setShowDialog(false);
+              onConfirm();
+            }}
+            color="primary"
+            variant="contained"
+          >
+            รับไอเทมนี้
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
   return (
-    <Card sx={{ mt: 2, mb: 3, width: { xs: "100%", sm: "80%", md: "60%" } }}>
-      <CardContent>
-        <Grid
-          container
-          sx={{
-            mb: 2,
-            justifyContent: "center",
-            direction: "row",
-            alignItems: "center",
-          }}
-        >
-          <Grid size="auto">
-            <img
-              src={rewardItem.imgUrl ?? ""}
-              style={{ maxWidth: "200px", maxHeight: "200px" }}
-            />
-          </Grid>
+    <>
+      {renderDialog()}
+      <Card sx={{ mt: 2, mb: 3, width: { xs: "100%", sm: "80%" } }}>
+        <CardContent>
           <Grid
-            size="auto"
+            container
             sx={{
-              ml: 2,
-              px: 4,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
+              mb: 2,
+              justifyContent: "center",
+              direction: "row",
               alignItems: "center",
             }}
           >
-            <Typography variant="h6">สถานการณ์:</Typography>
-            <Typography>{scenario.description}</Typography>
-
-            <Typography variant="subtitle1">จาก {mapName}</Typography>
-            <Typography variant="h6" sx={{ mt: 1 }}>
-              ของรางวัล:
-            </Typography>
-            <Typography>{rewardItem.name}</Typography>
-            <Typography
-              variant="body2"
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <img
+                src={rewardItem.imgUrl ?? ""}
+                style={{
+                  maxWidth: "250px",
+                  maxHeight: "250px",
+                  justifyContent: "center",
+                  display: "block",
+                  margin: "0 auto",
+                }}
+              />
+            </Grid>
+            <Grid
+              size={{ xs: 12, sm: 6 }}
               sx={{
-                whiteSpace: "pre-line", // preserves \n as line breaks
-                wordBreak: "break-word", // breaks long words/URLs
-                overflowWrap: "break-word",
+                mt: 2,
+                ml: 2,
+                px: 4,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
               }}
             >
-              คำอธิบาย: {rewardItem.description}
-            </Typography>
-          </Grid>
-        </Grid>
+              <Grid>
+                <Typography variant="h4" style={{ textAlign: "left" }}>
+                  คุณเจอกับ....
+                </Typography>
+              </Grid>
+              <Grid>
+                <Typography variant="h6" style={{ textAlign: "left" }}>
+                  สถานการณ์:
+                </Typography>
+                <Typography variant="h6" sx={{ textAlign: "left" }}>
+                  {scenario.description}
+                </Typography>
+              </Grid>
 
-        <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={onRefresh}>
-          กดสุ่มใหม่
-        </Button>
-        <Button variant="contained" sx={{ mt: 2 }} onClick={onConfirm}>
-          รับไอเทมนี้
-        </Button>
-      </CardContent>
-    </Card>
+              <Grid></Grid>
+              <Typography variant="body2" sx={{ mt: 0.5 }}>
+                จาก{mapName}
+              </Typography>
+              <Typography
+                variant="h6"
+                style={{ textAlign: "left" }}
+                sx={{ mt: 1 }}
+              >
+                ของรางวัล: {rewardItem.name}
+              </Typography>
+
+              <Typography
+                variant="body2"
+                sx={{
+                  whiteSpace: "pre-line", // preserves \n as line breaks
+                  wordBreak: "break-word", // breaks long words/URLs
+                  overflowWrap: "break-word",
+                }}
+              >
+                คำอธิบาย:
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  textAlign: "left",
+                  whiteSpace: "pre-line", // preserves \n as line breaks
+                  wordBreak: "break-word", // breaks long words/URLs
+                  overflowWrap: "break-word",
+                }}
+              >
+                {rewardItem.description}
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <Button
+            variant="contained"
+            sx={{ mt: 2, mr: 2, width: { xs: "100%", sm: "auto" } }}
+            onClick={onRefresh}
+          >
+            กดสุ่มอีกครั้ง
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ mt: 2, width: { xs: "100%", sm: "auto" } }}
+            onClick={handleConfirm}
+          >
+            รับไอเทมนี้
+          </Button>
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
