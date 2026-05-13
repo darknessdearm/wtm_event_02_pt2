@@ -5,6 +5,7 @@ import { onValue, ref } from "firebase/database";
 import { db } from "../firebase";
 import {
   Autocomplete,
+  Box,
   Card,
   CardContent,
   Grid,
@@ -12,7 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { mapOptions } from "../data";
+import { mapOptions, positionOptions } from "../data";
 import { Search } from "@mui/icons-material";
 
 const History: React.FC = () => {
@@ -93,29 +94,66 @@ const History: React.FC = () => {
         </IconButton>
       </Grid>
       <Grid container spacing={2}>
-        {searchTerm &&
-          characters.map((char) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={char.id}>
-              <Card key={char.id} sx={{ mt: 1, mb: 1, width: "100%" }}>
-                <CardContent>
-                  <Typography variant="h6">
-                    {char.name} ({char.position})
+        {characters.map((char) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={char.id}>
+            <Card
+              key={char.id}
+              sx={{ mt: 1, mb: 1, width: "100%", height: "100%" }}
+            >
+              <CardContent>
+                <Typography variant="h6" sx={{ textAlign: "center", mt: 1 }}>
+                  {char.name != "" ? char.name : "Unknown Character"}
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography variant="body2">
+                    {
+                      positionOptions.find((pos) => pos.id === char.position)
+                        ?.name
+                    }
                   </Typography>
-                  <Typography>
-                    {mapOptions.find((area) => area.id === char.mapArea)?.name}
+                </Box>
+
+                <Box sx={{ marginTop: "8px" }}>
+                  <Typography variant="body2" sx={{ textAlign: "left", px: 3 }}>
+                    สถานที่สำรวจ:
                   </Typography>
-                  <Typography>ไอเทมที่ได้รับ:</Typography>
-                  <ul>
+                  <Typography variant="body2" sx={{ textAlign: "left", px: 3 }}>
+                    •{" "}
+                    {
+                      mapOptions.find((area) => area.id === char.mapArea)
+                        ?.description
+                    }
+                  </Typography>
+                </Box>
+
+                {char.itemsCollected.length > 0 && (
+                  <Box sx={{ marginTop: "8px" }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ textAlign: "left", px: 3 }}
+                    >
+                      ไอเทมที่ได้รับ:
+                    </Typography>
                     {char.itemsCollected.map((item) => (
-                      <li key={item.id}>
-                        {item.name} ({item.mapArea})
-                      </li>
+                      <Typography
+                        variant="body2"
+                        sx={{ textAlign: "left", px: 3 }}
+                        key={item.id}
+                      >
+                        • {item.name}
+                      </Typography>
                     ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+                  </Box>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
     </div>
   );

@@ -316,17 +316,17 @@ export const positionOptions = [
 export const mapOptions: MapOption[] = [
   {
     id: "001",
-    name: "พื้นที่ 1 - ประภาคารร้าง",
-    description: "ประภาคารร้างที่ถูกลืม",
+    name: "พื้นที่ 1",
+    description: "ประภาคารร้าง",
   },
   {
     id: "002",
-    name: "พื้นที่ 2 - ป่ารอบๆ เรือนจำ",
-    description: "ป่าทึบที่ล้อมรอบเรือนจำ",
+    name: "พื้นที่ 2",
+    description: "ป่ารอบๆ เรือนจำ",
   },
   {
     id: "003",
-    name: "พื้นที่ 3 - โรงเรียน Murrwood High",
-    description: "โรงเรียน High School ประจำเมือง",
+    name: "พื้นที่ 3",
+    description: "โรงเรียน Murrwood High",
   },
 ];

@@ -143,7 +143,7 @@ const Home: React.FC = () => {
               >
                 {mapOptions.map((area) => (
                   <MenuItem key={area.id} value={area.id}>
-                    {area.name}
+                    {area.name} - {area.description}
                   </MenuItem>
                 ))}
               </Select>
