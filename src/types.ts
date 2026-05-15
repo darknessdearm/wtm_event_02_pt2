@@ -35,4 +35,9 @@ interface Position {
   name: string;
 }
 
-export type { Character, Item, Scenario, MapOption, Position };
+interface ItemPoolEntry {
+  id: string;
+  quantity: number;
+}
+
+export type { Character, Item, Scenario, MapOption, Position, ItemPoolEntry };

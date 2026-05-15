@@ -1,5 +1,5 @@
 // src/pages/Home.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextField,
   MenuItem,
@@ -19,8 +19,8 @@ import {
   DialogActions,
 } from "@mui/material";
 import { RewardCard } from "../components";
-import type { Scenario, Character, Item } from "../types";
-import { ref, push, get, update } from "firebase/database";
+import type { Scenario, Character, Item, ItemPoolEntry } from "../types";
+import { ref, push, get, update, onValue, runTransaction } from "firebase/database";
 import { db } from "../firebase";
 import { items, positionOptions, scenarios, mapOptions } from "../data"; // สมมติคุณมีไฟล์ data.ts เก็บ scenarios
 import "./Home.css";
@@ -35,6 +35,30 @@ const Home: React.FC = () => {
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [rollCounts, setRollCounts] = useState<Record<string, number>>({});
   const [showRerollLimitModal, setShowRerollLimitModal] = useState(false);
+  const [itemPool, setItemPool] = useState<Record<string, ItemPoolEntry>>({});
+  const [showEmptyPoolModal, setShowEmptyPoolModal] = useState(false);
+
+  useEffect(() => {
+    const poolRef = ref(db, "itemPool");
+    return onValue(poolRef, (snap) => {
+      setItemPool((snap.val() as Record<string, ItemPoolEntry> | null) ?? {});
+    });
+  }, []);
+
+  const pickWeightedItem = (mapAreaId: string): Item | null => {
+    const candidates = items
+      .filter((it) => it.mapArea === mapAreaId)
+      .map((it) => ({ item: it, qty: itemPool[it.id]?.quantity ?? 0 }))
+      .filter((c) => c.qty > 0);
+    const totalWeight = candidates.reduce((sum, c) => sum + c.qty, 0);
+    if (totalWeight <= 0) return null;
+    let r = Math.random() * totalWeight;
+    for (const c of candidates) {
+      r -= c.qty;
+      if (r < 0) return c.item;
+    }
+    return candidates[candidates.length - 1].item;
+  };
 
   const handleSubmit = () => {
     if (!name || !position || !mapArea) {
@@ -54,14 +78,18 @@ const Home: React.FC = () => {
       setShowRerollLimitModal(true);
       return;
     }
+
+    const dropItem = pickWeightedItem(mapArea);
+    if (!dropItem) {
+      setShowEmptyPoolModal(true);
+      return;
+    }
+
     setRollCounts((prev) => ({
       ...prev,
       [sessionKey]: (prev[sessionKey] ?? 0) + 1,
     }));
 
-    const filtered = items.filter((s) => s.mapArea === mapArea);
-    const dropItem: Item =
-      filtered[Math.floor(Math.random() * filtered.length)];
     const randomScenario =
       scenarios[Math.floor(Math.random() * scenarios.length)];
     setCurrentScenario(randomScenario);
@@ -92,7 +120,21 @@ const Home: React.FC = () => {
   };
 
   const handleConfirm = async () => {
+    if (!foundItem) return;
     try {
+      const poolEntryRef = ref(db, `itemPool/${foundItem.id}/quantity`);
+      const txn = await runTransaction(poolEntryRef, (current) => {
+        const qty = typeof current === "number" ? current : 0;
+        if (qty <= 0) return; // abort: nothing left to give
+        return qty - 1;
+      });
+      if (!txn.committed) {
+        setShowEmptyPoolModal(true);
+        setFoundItem(null);
+        setCurrentScenario(null);
+        return;
+      }
+
       const snapshot = await get(ref(db, "characters"));
       const raw = snapshot.val() as Record<string, unknown> | null;
 
@@ -281,6 +323,28 @@ const Home: React.FC = () => {
         <DialogActions>
           <Button
             onClick={() => setShowRerollLimitModal(false)}
+            variant="contained"
+          >
+            ตกลง
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={showEmptyPoolModal}
+        onClose={() => setShowEmptyPoolModal(false)}
+      >
+        <DialogTitle sx={{ color: "error.main" }}>
+          ไอเทมในพื้นที่นี้หมดแล้ว
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            ไอเทมที่สามารถสุ่มได้ในพื้นที่นี้ถูกเก็บไปหมดแล้ว
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setShowEmptyPoolModal(false)}
             variant="contained"
           >
             ตกลง

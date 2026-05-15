@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import type { Scenario, Item } from "../types";
 import { Close } from "@mui/icons-material";
+import { resolveItemImage } from "../utils/itemImages";
 
 interface Props {
   scenario: Scenario;
@@ -100,7 +101,7 @@ const RewardCard: React.FC<Props> = ({
           >
             <Grid size={{ xs: 12, sm: 4 }}>
               <img
-                src={rewardItem.imgUrl ?? ""}
+                src={resolveItemImage(rewardItem.imgUrl)}
                 style={{
                   maxWidth: "250px",
                   maxHeight: "250px",
