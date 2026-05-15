@@ -95,7 +95,7 @@ const Items: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
       }}
     >
       <h2>รวมไอเทมทั้งหมด</h2>
@@ -124,7 +124,9 @@ const Items: React.FC = () => {
                     }}
                     alt={item.name}
                   />
-                  <Typography sx={{ overflowWrap: "anywhere", textAlign: "center" }}>
+                  <Typography
+                    sx={{ overflowWrap: "anywhere", textAlign: "center" }}
+                  >
                     {item.name} ×{item.count}
                   </Typography>
                 </CardContent>
@@ -182,9 +184,7 @@ const Items: React.FC = () => {
                     transition: "transform 0.15s ease-out",
                     cursor: zoom > ZOOM_MIN ? "grab" : "zoom-in",
                   }}
-                  onClick={() =>
-                    zoom >= ZOOM_MAX ? zoomReset() : zoomIn()
-                  }
+                  onClick={() => (zoom >= ZOOM_MAX ? zoomReset() : zoomIn())}
                 />
               </Box>
 
@@ -206,7 +206,10 @@ const Items: React.FC = () => {
                 >
                   <ZoomOutIcon />
                 </IconButton>
-                <Typography variant="body2" sx={{ minWidth: 48, textAlign: "center" }}>
+                <Typography
+                  variant="body2"
+                  sx={{ minWidth: 48, textAlign: "center" }}
+                >
                   {Math.round(zoom * 100)}%
                 </Typography>
                 <IconButton
