@@ -388,7 +388,8 @@ const Home: React.FC = () => {
           scenario={currentScenario} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
           rewardItem={foundItem} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
           mapName={
-            mapOptions.find((m) => m.id === mapArea)?.name || "Unknown Map"
+            mapOptions.find((m) => m.id === mapArea)?.description ||
+            "Unknown Map"
           }
           onRefresh={
             (rollCounts[`${name}|${position}|${mapArea}`] ?? 0) < 3

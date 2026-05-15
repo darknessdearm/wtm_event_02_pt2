@@ -153,7 +153,7 @@ const RewardCard: React.FC<Props> = ({
 
               <Grid></Grid>
               <Typography variant="body2" sx={{ mt: 0.5 }}>
-                จาก{mapName}
+                จากพื้นที่ {mapName}
               </Typography>
               <Typography
                 variant="h6"

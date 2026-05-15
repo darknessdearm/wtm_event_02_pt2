@@ -127,7 +127,12 @@ const Items: React.FC = () => {
                   <Typography
                     sx={{ overflowWrap: "anywhere", textAlign: "center" }}
                   >
-                    {item.name} ×{item.count}
+                    {item.name}
+                  </Typography>
+                  <Typography
+                    sx={{ overflowWrap: "anywhere", textAlign: "center" }}
+                  >
+                    ถูกเจอแล้ว {item.count} ชิ้น
                   </Typography>
                 </CardContent>
               </CardActionArea>
