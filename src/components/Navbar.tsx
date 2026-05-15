@@ -35,11 +35,24 @@ const Navbar: React.FC = () => {
     }
   };
 
+  const logoUrl = `${import.meta.env.BASE_URL}logo.svg`;
+
   return (
     <AppBar position="static" color="transparent">
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <MenuIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+        <Toolbar disableGutters sx={{ position: "relative" }}>
+          <Box
+            component="img"
+            src={logoUrl}
+            alt="WTM logo"
+            onClick={() => navigate(basePath)}
+            sx={{
+              display: { xs: "none", md: "flex" },
+              height: 36,
+              mr: 1.5,
+              cursor: "pointer",
+            }}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -97,23 +110,41 @@ const Navbar: React.FC = () => {
             </Menu>
           </Box>
 
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
+          <Box
             sx={{
-              mr: 2,
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
               display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "prompt",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+              alignItems: "center",
+              gap: 1,
+              pointerEvents: "none",
             }}
           >
-            WTM
-          </Typography>
+            <Box
+              component="img"
+              src={logoUrl}
+              alt="WTM logo"
+              onClick={() => navigate(basePath)}
+              sx={{ height: 32, cursor: "pointer", pointerEvents: "auto" }}
+            />
+            <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              sx={{
+                fontFamily: "prompt",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+                pointerEvents: "auto",
+              }}
+            >
+              WTM
+            </Typography>
+          </Box>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
