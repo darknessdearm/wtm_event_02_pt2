@@ -20,7 +20,14 @@ import {
 } from "@mui/material";
 import { RewardCard } from "../components";
 import type { Scenario, Character, Item, ItemPoolEntry } from "../types";
-import { ref, push, get, update, onValue, runTransaction } from "firebase/database";
+import {
+  ref,
+  push,
+  get,
+  update,
+  onValue,
+  runTransaction,
+} from "firebase/database";
 import { db } from "../firebase";
 import { items, positionOptions, scenarios, mapOptions } from "../data"; // สมมติคุณมีไฟล์ data.ts เก็บ scenarios
 import "./Home.css";
@@ -296,7 +303,15 @@ const Home: React.FC = () => {
         mapArea &&
         (rollCounts[`${name}|${position}|${mapArea}`] ?? 0) >= 3
       ) && (
-        <Button onClick={handleSubmit} variant="contained" size="large">
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          size="large"
+          sx={{
+            width: { xs: "100%", sm: "auto" },
+            height: { xs: "50px", sm: "auto" },
+          }}
+        >
           สุ่มสถานการณ์
         </Button>
       )}

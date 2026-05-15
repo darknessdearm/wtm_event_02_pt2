@@ -9,6 +9,14 @@ const theme = createTheme({
   typography: {
     fontFamily: '"Prompt", sans-serif',
   },
+  palette: {
+    primary: {
+      main: "#9b2121",
+    },
+    secondary: {
+      main: "#437a45",
+    },
+  },
 });
 const basePath = "/wtm_event_02_pt2/";
 const App: React.FC = () => {

@@ -64,8 +64,12 @@ const RewardCard: React.FC<Props> = ({
                 onRefresh();
                 setShowDialog(false);
               }}
-              color="primary"
+              color="secondary"
               variant="contained"
+              sx={{
+                width: { xs: "100%", sm: "auto" },
+                height: { xs: "50px", sm: "auto" },
+              }}
             >
               กดสุ่มอีกครั้ง
             </Button>
@@ -77,6 +81,10 @@ const RewardCard: React.FC<Props> = ({
             }}
             color="primary"
             variant="contained"
+            sx={{
+              width: { xs: "100%", sm: "auto" },
+              height: { xs: "50px", sm: "auto" },
+            }}
           >
             รับไอเทมนี้
           </Button>
@@ -115,7 +123,7 @@ const RewardCard: React.FC<Props> = ({
               size={{ xs: 12, sm: 6 }}
               sx={{
                 mt: 2,
-                ml: 2,
+                ml: { xs: 0, sm: 2 },
                 px: 4,
                 display: "flex",
                 flexDirection: "column",
@@ -132,7 +140,13 @@ const RewardCard: React.FC<Props> = ({
                 <Typography variant="h6" style={{ textAlign: "left" }}>
                   สถานการณ์:
                 </Typography>
-                <Typography variant="h6" sx={{ textAlign: "left" }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    textAlign: "left",
+                    fontSize: { xs: "18px", sm: "20px" },
+                  }}
+                >
                   {scenario.description}
                 </Typography>
               </Grid>
@@ -176,16 +190,28 @@ const RewardCard: React.FC<Props> = ({
           {onRefresh && (
             <Button
               variant="contained"
-              sx={{ mt: 2, mr: 2, width: { xs: "100%", sm: "auto" } }}
+              color="secondary"
+              sx={{
+                mt: 2,
+                mr: 2,
+                width: { xs: "100%", sm: "auto" },
+                height: { xs: "50px", sm: "auto" },
+              }}
               onClick={onRefresh}
+              size="large"
             >
               กดสุ่มอีกครั้ง
             </Button>
           )}
           <Button
             variant="contained"
-            sx={{ mt: 2, width: { xs: "100%", sm: "auto" } }}
+            sx={{
+              mt: 2,
+              width: { xs: "100%", sm: "auto" },
+              height: { xs: "50px", sm: "auto" },
+            }}
             onClick={handleConfirm}
+            size="large"
           >
             รับไอเทมนี้
           </Button>
