@@ -145,7 +145,7 @@ const RewardCard: React.FC<Props> = ({
                 style={{ textAlign: "left" }}
                 sx={{ mt: 1 }}
               >
-                ของรางวัล: {rewardItem.name}
+                ไอเทมที่ได้รับ: {rewardItem.name}
               </Typography>
 
               <Typography

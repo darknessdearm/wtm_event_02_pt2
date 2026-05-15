@@ -14,12 +14,14 @@ interface Item {
   imgUrl?: string;
   mapArea: string;
   isOnlyOne?: boolean;
+  ishidden?: boolean; // เพิ่มสถานะซ่อนสำหรับไอเทมที่ต้องปลดล็อกก่อนใช้งาน
+  isLocked?: boolean; // เพิ่มสถานะล็อกสำหรับไอเทมที่ต้องปลดล็อกก่อนใช้งาน
 }
 
 interface Scenario {
   id: string;
   description: string;
-  mapArea?: string;
+  mapArea?: string[];
 }
 
 interface MapOption {
