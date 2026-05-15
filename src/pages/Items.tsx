@@ -5,6 +5,10 @@ import { ref, onValue } from "firebase/database";
 import { db } from "../firebase";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
 import { resolveItemImage } from "../utils/itemImages";
+import { items as itemCatalog } from "../data";
+
+const DIARY_PIECE_IDS = ["i20", "i21", "i22"] as const;
+const COMBINED_DIARY_ID = "i29";
 
 type CollectedItem = Item & { count: number };
 
@@ -38,6 +42,14 @@ const Items: React.FC = () => {
           } else {
             counts.set(item.id, { ...item, count: 1 });
           }
+        }
+      }
+
+      const hasAllDiaryPieces = DIARY_PIECE_IDS.every((id) => counts.has(id));
+      if (hasAllDiaryPieces && !counts.has(COMBINED_DIARY_ID)) {
+        const combined = itemCatalog.find((it) => it.id === COMBINED_DIARY_ID);
+        if (combined) {
+          counts.set(COMBINED_DIARY_ID, { ...combined, count: 1 });
         }
       }
 
