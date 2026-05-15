@@ -4,6 +4,7 @@ import type { Item } from "../types";
 import { ref, onValue } from "firebase/database";
 import { db } from "../firebase";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { resolveItemImage } from "../utils/itemImages";
 
 const Items: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -46,7 +47,7 @@ const Items: React.FC = () => {
             >
               <CardContent>
                 <img
-                  src={item.imgUrl ?? ""}
+                  src={resolveItemImage(item.imgUrl)}
                   style={{
                     maxWidth: "250px",
                     maxHeight: "250px",
