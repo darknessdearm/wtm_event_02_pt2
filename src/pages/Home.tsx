@@ -97,8 +97,17 @@ const Home: React.FC = () => {
       [sessionKey]: (prev[sessionKey] ?? 0) + 1,
     }));
 
+    const selectedScenarios = scenarios.filter((e) =>
+      e.mapArea?.includes(mapArea),
+    );
     const randomScenario =
-      scenarios[Math.floor(Math.random() * scenarios.length)];
+      selectedScenarios[
+        Math.floor(
+          Math.random() *
+            selectedScenarios.filter((e) => e.mapArea?.includes(mapArea))
+              .length,
+        )
+      ];
     setCurrentScenario(randomScenario);
     setFoundItem(dropItem);
   };
