@@ -19,7 +19,13 @@ import {
   DialogActions,
 } from "@mui/material";
 import { RewardCard } from "../components";
-import type { Scenario, Character, Item, ItemPoolEntry } from "../types";
+import type {
+  Scenario,
+  Character,
+  Item,
+  ItemPoolEntry,
+  Reward,
+} from "../types";
 import {
   ref,
   push,
@@ -133,6 +139,19 @@ const Home: React.FC = () => {
     setCurrentScenario(null);
     setFoundItem(null);
     setErrors({ name: false, position: false, mapArea: false });
+  };
+
+  const validateToDisplayReward = () => {
+    if (foundItem?.mapArea === mapArea) {
+      if (
+        Math.max(0, 3 - (rollCounts[`${name}|${position}|${mapArea}`] ?? 0)) < 3
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
   };
 
   const handleConfirm = async () => {
@@ -392,7 +411,7 @@ const Home: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      {currentScenario && foundItem && (
+      {validateToDisplayReward() && currentScenario && foundItem && (
         <RewardCard
           scenario={currentScenario} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward
           rewardItem={foundItem} // คุณอาจต้องปรับโครงสร้าง Scenario ใน data.ts เพื่อให้มี reward

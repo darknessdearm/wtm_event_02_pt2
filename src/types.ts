@@ -40,4 +40,17 @@ interface ItemPoolEntry {
   quantity: number;
 }
 
-export type { Character, Item, Scenario, MapOption, Position, ItemPoolEntry };
+interface Reward {
+  scenario: Scenario;
+  item: Item;
+}
+
+export type {
+  Character,
+  Item,
+  Scenario,
+  MapOption,
+  Position,
+  ItemPoolEntry,
+  Reward,
+};
