@@ -19,13 +19,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { RewardCard } from "../components";
-import type {
-  Scenario,
-  Character,
-  Item,
-  ItemPoolEntry,
-  Reward,
-} from "../types";
+import type { Scenario, Character, Item, ItemPoolEntry } from "../types";
 import {
   ref,
   push,
